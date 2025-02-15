@@ -31,7 +31,7 @@ namespace ConsoleApp1
                             Console.BackgroundColor = ConsoleColor.Black;
                         }
 
-                        Console.SetCursorPosition(60, (i) * (30 / Actions.Length + 1));
+                        Console.SetCursorPosition(60, (i) * (30 / 10));
                         Console.WriteLine(Actions[i]);
                     }
                     ConsoleKeyInfo info = Console.ReadKey();
