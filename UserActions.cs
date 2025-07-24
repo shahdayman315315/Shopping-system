@@ -21,33 +21,44 @@ namespace Shopping_system
                 Console.WriteLine(item.Key + ":" + item.Value);
             }
             string item_name = Console.ReadLine();
-            foreach (var item in Items)
+            var item_exists = Items.FirstOrDefault(it=>it.Key.Equals(item_name,StringComparison.OrdinalIgnoreCase));
+            if(item_exists.Key is null)
             {
-                if (item.Key == item_name) {
-                    Actions.Push(Tuple.Create("Add",item.Key,item.Value));
-                    Cart.Add(Tuple.Create(item.Key, item.Value));
-                    Totalprice += item.Value;
-                    Console.WriteLine("Item purchased successfully");
-                }
+                Console.WriteLine("Item not Found");
+                return;
             }
+
+            Actions.Push(Tuple.Create("Add", item_exists.Key, item_exists.Value));
+            Cart.Add(Tuple.Create(item_exists.Key, item_exists.Value));
+            Totalprice += item_exists.Value;
+            Console.WriteLine("Item purchased successfully");
+              
 
         }
         public void RemoveItem() {
             Console.WriteLine("Enter item you want to remove: ");
             string item_name = Console.ReadLine();
-            for(int i = 0;i<Cart.Count;i++) {
-                if (item_name == Cart[i].Item1)
-                {
-                    Actions.Push(Tuple.Create("Remove", Cart[i].Item1, Cart[i].Item2));
-                    double pitem = Cart[i].Item2;
-                    Cart.Remove(Tuple.Create(Cart[i].Item1, Cart[i].Item2));
-                    Totalprice -= pitem;
-                }
+            var item_exists = Items.FirstOrDefault(it => it.Key.Equals(item_name, StringComparison.OrdinalIgnoreCase));
+            if (item_exists.Key is null)
+            {
+                Console.WriteLine("Item not Purchased");
+                return;
             }
+            
+            Actions.Push(Tuple.Create("Remove", item_exists.Key, item_exists.Value));
+            double itemprice = item_exists.Value;
+            Cart.Remove(Tuple.Create(item_exists.Key, item_exists.Value));
+            Totalprice -= itemprice;
+               
             Console.WriteLine("Item removed from your Cart");
         }
         public void ViewCart()
         {
+            if(Cart.Count == 0)
+            {
+                Console.WriteLine("Your Cart is Empty");
+                return;
+            }
             Console.WriteLine("Items in your Cart: ");
             foreach (var item in Cart) {
                 Console.Write(item.Item1 +"  " );
@@ -57,6 +68,11 @@ namespace Shopping_system
 
         public void Check_out()
         {
+            if (Cart.Count == 0)
+            {
+                Console.WriteLine("Your Cart is Empty");
+                return;
+            }
             Console.WriteLine("These are the Items you Purchased: ");
             foreach (var item in Cart) {
                 Console.WriteLine($"Item:  {item.Item1} -> Price: {item.Item2} ");
@@ -69,6 +85,14 @@ namespace Shopping_system
 
         public void UNDO()
         {
+
+
+            if (Actions.Count == 0)
+            {
+                Console.WriteLine("You have Done No Actions yet");
+                return;
+            }
+
             if (Actions.Peek().Item1 == "Add")
             {
                 Cart.RemoveAt(Cart.Count - 1);
